@@ -71,20 +71,44 @@ Sigue estos pasos para levantar el proyecto localmente:
 
 El servidor estará disponible en `http://localhost:3000`.
 
+## Novedades (Unidad 3)
+
+Esta versión incluye soporte para:
+- **Usuarios y Autenticación:** Registro y Login usando contraseñas hasheadas (`bcryptjs`) y JSON Web Tokens (`jsonwebtoken`).
+- **Transacciones por Usuario:** Cada transacción está asociada al usuario que la crea. El balance y el listado de transacciones son específicos de cada usuario.
+- **Subida de Comprobantes:** Endpoint para adjuntar imágenes (boletas, facturas) a las transacciones. Las imágenes se guardan de forma local en la carpeta `uploads/`.
+
+## Variables de Entorno Adicionales
+
+Asegúrate de agregar la clave secreta para JWT a tu archivo `.env`:
+```env
+JWT_SECRET="supersecret-cambiame"
+```
+
 ## Endpoints Principales
 
+### Autenticación (Públicos)
 | Método | Ruta | Descripción |
 | --- | --- | --- |
-| GET | `/categories` | Lista todas las categorías |
-| POST | `/categories` | Crea una nueva categoría |
-| GET | `/transactions` | Lista todas las transacciones (con categoría) |
-| GET | `/transactions/balance` | Retorna el balance general (Ingresos - Gastos) |
-| POST | `/transactions` | Registra un nuevo movimiento |
+| POST | `/auth/register` | Crea una cuenta. Devuelve un token JWT. |
+| POST | `/auth/login` | Inicia sesión. Devuelve un token JWT. |
 
-## Lógica del Balance
+### Categorías (Protegidos con JWT)
+| Método | Ruta | Descripción |
+| --- | --- | --- |
+| GET | `/categories` | Lista todas las categorías (globales). |
+| POST | `/categories` | Crea una nueva categoría. |
 
-El requerimiento especifica que el cálculo del balance debe vivir en el **Controller**. 
-En `src/controllers/transactions.controller.ts`, la función `getBalance` recupera todas las transacciones a través del repositorio y realiza la suma de ingresos y egresos para calcular el saldo final, asegurando que la lógica de negocio esté separada de la persistencia.
+### Transacciones (Protegidos con JWT)
+| Método | Ruta | Descripción |
+| --- | --- | --- |
+| GET | `/transactions` | Lista las transacciones **del usuario autenticado**. |
+| GET | `/transactions/balance` | Retorna el balance general del usuario autenticado. |
+| GET | `/transactions/:id` | Detalle de una transacción (solo si el usuario es el dueño). |
+| POST | `/transactions` | Registra un nuevo movimiento asociado al usuario autenticado. |
+| PATCH | `/transactions/:id` | Actualiza una transacción (solo si es el dueño). |
+| DELETE | `/transactions/:id` | Elimina una transacción (solo si es el dueño). |
+| POST | `/transactions/upload` | Sube un comprobante de imagen (`multipart/form-data`) y devuelve la URL. |
 
 ---
 

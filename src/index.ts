@@ -2,6 +2,7 @@ import 'dotenv/config'
 import { Hono } from 'hono'
 import { logger } from 'hono/logger'
 import { serve } from '@hono/node-server'
+import { serveStatic } from '@hono/node-server/serve-static'
 import categoriesRouter from './routes/categories.routes.js'
 import transactionsRouter from './routes/transactions.routes.js'
 import authRouter from './routes/auth.routes.js'
@@ -11,6 +12,9 @@ const app = new Hono()
 
 // Middleware globales
 app.use('*', logger())
+
+// Servir archivos estáticos
+app.use('/uploads/*', serveStatic({ root: './' }))
 
 // Rutas públicas
 app.get('/', (c) => c.text('Cashi API - Personal Finance Backend'))
