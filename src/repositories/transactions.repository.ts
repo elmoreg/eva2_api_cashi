@@ -8,16 +8,17 @@ export type TransactionWithCategory = Prisma.TransactionGetPayload<{
 }>
 
 interface TransactionRepository {
-  findAll: () => Promise<TransactionWithCategory[]>
+  findAll: (userId: number) => Promise<TransactionWithCategory[]>
   findById: (id: number) => Promise<TransactionWithCategory | null>
-  create: (data: CreateTransactionInput) => Promise<Transaction>
+  create: (data: CreateTransactionInput, userId: number) => Promise<Transaction>
   update: (id: number, data: UpdateTransactionInput) => Promise<Transaction>
   remove: (id: number) => Promise<void>
 }
 
 export const transactionsRepository: TransactionRepository = {
-  findAll: () =>
+  findAll: (userId) =>
     prisma.transaction.findMany({
+      where: { userId },
       include: { category: true }
     }),
 
@@ -27,11 +28,12 @@ export const transactionsRepository: TransactionRepository = {
       include: { category: true }
     }),
 
-  create: (data) =>
+  create: (data, userId) =>
     prisma.transaction.create({ 
       data: {
         ...data,
-        date: new Date(data.date)
+        date: new Date(data.date),
+        userId
       } 
     }),
 

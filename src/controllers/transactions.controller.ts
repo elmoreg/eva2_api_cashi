@@ -4,24 +4,30 @@ import { createTransactionSchema, updateTransactionSchema } from '../schemas/tra
 import { parsePrismaError } from '../lib/prisma-errors.js'
 
 export const getTransactions = async (c: Context) => {
-  const transactions = await transactionsRepository.findAll()
+  const user = c.get('user')
+  const transactions = await transactionsRepository.findAll(user.userId)
   return c.json(transactions)
 }
 
 export const getTransactionById = async (c: Context) => {
   const id = Number(c.req.param('id'))
+  const user = c.get('user')
   const transaction = await transactionsRepository.findById(id)
+  
   if (!transaction) return c.json({ error: 'Transacción no encontrada' }, 404)
+  if (transaction.userId !== user.userId) return c.json({ error: 'No autorizado' }, 403)
+  
   return c.json(transaction)
 }
 
 export const createTransaction = async (c: Context) => {
   const body = await c.req.json()
+  const user = c.get('user')
   const result = createTransactionSchema.safeParse(body)
   if (!result.success) return c.json({ errors: result.error.issues }, 400)
   
   try {
-    const transaction = await transactionsRepository.create(result.data)
+    const transaction = await transactionsRepository.create(result.data, user.userId)
     return c.json(transaction, 201)
   } catch (error) {
     const { status, message } = parsePrismaError(error)
@@ -31,7 +37,13 @@ export const createTransaction = async (c: Context) => {
 
 export const updateTransaction = async (c: Context) => {
   const id = Number(c.req.param('id'))
+  const user = c.get('user')
   const body = await c.req.json()
+  
+  const existing = await transactionsRepository.findById(id)
+  if (!existing) return c.json({ error: 'Transacción no encontrada' }, 404)
+  if (existing.userId !== user.userId) return c.json({ error: 'No autorizado' }, 403)
+
   const result = updateTransactionSchema.safeParse(body)
   if (!result.success) return c.json({ errors: result.error.issues }, 400)
   
@@ -46,6 +58,12 @@ export const updateTransaction = async (c: Context) => {
 
 export const deleteTransaction = async (c: Context) => {
   const id = Number(c.req.param('id'))
+  const user = c.get('user')
+  
+  const existing = await transactionsRepository.findById(id)
+  if (!existing) return c.json({ error: 'Transacción no encontrada' }, 404)
+  if (existing.userId !== user.userId) return c.json({ error: 'No autorizado' }, 403)
+
   try {
     await transactionsRepository.remove(id)
     return c.json({ message: 'Transacción eliminada' })
@@ -56,9 +74,9 @@ export const deleteTransaction = async (c: Context) => {
 }
 
 export const getBalance = async (c: Context) => {
-  const transactions = await transactionsRepository.findAll()
+  const user = c.get('user')
+  const transactions = await transactionsRepository.findAll(user.userId)
   
-  // Lógica de negocio: cálculo del balance en el controller
   const totalIncome = transactions
     .filter(t => t.type === 'income')
     .reduce((acc, t) => acc + t.amount, 0)

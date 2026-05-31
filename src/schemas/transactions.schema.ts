@@ -1,20 +1,17 @@
-import * as z from 'zod'
+import { z } from 'zod'
 
 export const createTransactionSchema = z.object({
-  amount:      z.number().positive(),
-  type:        z.enum(['income', 'expense']),
-  description: z.string().max(255).optional(),
-  date:        z.string().datetime().or(z.date()), // accepts ISO string or Date object
-  categoryId:  z.number().int().positive(),
+  amount: z.number().positive(),
+  type: z.enum(['income', 'expense']),
+  description: z.string().optional(),
+  date: z.string().datetime(),
+  categoryId: z.number().positive(),
+  receiptUrl: z.string().url().optional(),
+  latitude: z.number().optional(),
+  longitude: z.number().optional()
 })
 
-export const updateTransactionSchema = z.object({
-  amount:      z.number().positive().optional(),
-  type:        z.enum(['income', 'expense']).optional(),
-  description: z.string().max(255).optional(),
-  date:        z.string().datetime().or(z.date()).optional(),
-  categoryId:  z.number().int().positive().optional(),
-})
+export const updateTransactionSchema = createTransactionSchema.partial()
 
 export type CreateTransactionInput = z.infer<typeof createTransactionSchema>
 export type UpdateTransactionInput = z.infer<typeof updateTransactionSchema>
