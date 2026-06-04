@@ -114,9 +114,6 @@ JWT_SECRET="supersecret-cambiame"
 
 ## Declaración de Uso de IA
 
-Este proyecto fue desarrollado con la asistencia de **Antigravity (AI Coding Assistant by Google DeepMind)**.
-
-**Uso de la herramienta:**
 - Generación de la estructura base siguiendo el patrón N-Layer.
 - Implementación de esquemas de validación Zod.
 - Configuración de Prisma 7 con Driver Adapters.
