@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "build": "tsdown",
-    "start": "node dist/index.js",
+    "start": "node dist/index.mjs",
     "db:up": "docker compose up -d",
     "db:down": "docker compose down",
     "migrate": "prisma migrate dev",
