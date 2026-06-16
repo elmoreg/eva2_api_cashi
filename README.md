@@ -1,6 +1,6 @@
 # Cashi - API de Finanzas Personales 💸
 
-> **URL de producción:** `https://cashi-api.onrender.com` *(actualizar después del primer deploy)*
+> **URL de producción:** `https://eva2-api-cashi.onrender.com`
 
 Cashi es un microservicio diseñado para gestionar ingresos y egresos, permitiendo a los usuarios organizar sus finanzas por categorías y consultar su balance general en tiempo real.
 
