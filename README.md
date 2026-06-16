@@ -71,7 +71,9 @@ Sigue estos pasos para levantar el proyecto localmente:
    yarn dev
    ```
 
-El servidor estará disponible en `http://localhost:3000`.
+El servidor estará disponible en `http://localhost:3000` (solo para desarrollo local). 
+
+> **Nota:** Para probar la versión pública (producción), utiliza directamente `https://eva2-api-cashi.onrender.com` sin necesidad de levantar Docker ni instalar nada.
 
 ## Novedades (Unidad 3)
 
