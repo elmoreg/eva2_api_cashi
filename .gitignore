@@ -6,4 +6,5 @@ generated/
 prueba
 documentacion.md
 guion_video_2.md
-
+uploads/*
+!uploads/.gitkeep

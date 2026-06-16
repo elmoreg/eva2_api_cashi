@@ -1,5 +1,7 @@
 # Cashi - API de Finanzas Personales 💸
 
+> **URL de producción:** `https://cashi-api.onrender.com` *(actualizar después del primer deploy)*
+
 Cashi es un microservicio diseñado para gestionar ingresos y egresos, permitiendo a los usuarios organizar sus finanzas por categorías y consultar su balance general en tiempo real.
 
 Este proyecto fue construido siguiendo una **arquitectura N-Layer** (Capas) para asegurar la escalabilidad y mantenibilidad del código.
@@ -84,6 +86,29 @@ Asegúrate de agregar la clave secreta para JWT a tu archivo `.env`:
 ```env
 JWT_SECRET="supersecret-cambiame"
 ```
+
+## Despliegue en Producción (Render)
+
+El proyecto está configurado para desplegarse automáticamente en [Render.com](https://render.com) mediante el archivo `render.yaml`.
+
+### Variables de Entorno Requeridas
+
+| Variable | Descripción | Ejemplo |
+|---|---|---|
+| `DATABASE_URL` | Connection string de PostgreSQL gestionado | `postgresql://user:pass@host/db` |
+| `JWT_SECRET` | Clave secreta para firmar tokens JWT (mín. 32 chars) | Generada automáticamente por Render |
+| `PORT` | Puerto en el que escucha el servidor | `10000` |
+
+> **Nota sobre uploads:** En el plan free de Render el filesystem es **efímero** — los archivos subidos a `/uploads` se pierden al reiniciar el servidor. Para persistencia real de imágenes se recomienda usar Cloudflare R2 o AWS S3.
+
+### Pasos para desplegar
+
+1. Crear una base de datos PostgreSQL en Render (plan Free)
+2. Crear un Web Service conectado a este repositorio
+3. Render detecta automáticamente el `render.yaml` y configura el servicio
+4. Configurar `DATABASE_URL`, `JWT_SECRET` y `PORT` en las variables de entorno
+5. El build ejecuta: `yarn install → prisma generate → prisma migrate deploy → yarn build`
+6. Cada `git push` a `main` dispara un nuevo deploy automático
 
 ## Endpoints Principales
 

@@ -9,6 +9,7 @@
     "db:up": "docker compose up -d",
     "db:down": "docker compose down",
     "migrate": "prisma migrate dev",
+    "migrate:deploy": "prisma migrate deploy",
     "studio": "prisma studio",
     "postinstall": "prisma generate"
   },

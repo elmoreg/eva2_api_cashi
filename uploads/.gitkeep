@@ -1,0 +1,3 @@
+# Este directorio almacena los comprobantes subidos por los usuarios.
+# En Render (plan free) el filesystem es efímero: los archivos se pierden al reiniciar.
+# Para producción real, usar Cloudflare R2 o AWS S3.
